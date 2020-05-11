@@ -25,9 +25,10 @@ def peers(nodeAddr):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("peers() response:", response.text)
     # print("peers:", response.json()["result"]["peers"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["peers"]
 
-print(peers('http://127.0.0.1:9650'))
 
 
 # Get the ID of the network this node is participating in
@@ -39,6 +40,8 @@ def getNetworkID(nodeAddr):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("getNetworkID() response:", response.text)
     # print("networkID:", response.json()["result"]["networkID"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["networkID"]
 
 
@@ -57,6 +60,8 @@ def alias(nodeAddr, endpoint, alias):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("alias() response:", response.text)
     # print("success:", response.json()["result"]["success"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["success"]
 
 
@@ -72,6 +77,8 @@ def aliasChain(nodeAddr, chainID, alias):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("aliasChain() response:", response.text)
     # print("success:", response.json()["result"]["success"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["success"]
 
 
@@ -86,6 +93,8 @@ def getBlockchainID(nodeAddr, chainAlias):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("getBlockchainID() response:", response.text)
     # print("blockchainID:", response.json()["result"]["blockchainID"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["blockchainID"]
 
 
@@ -100,6 +109,8 @@ def startCPUProfiler(nodeAddr, fileName):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("startCPUProfiler() response:", response.text)
     # print("success:", response.json()["result"]["success"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["success"]
 
 
@@ -113,6 +124,8 @@ def stopCPUProfiler(nodeAddr):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("stopCPUProfiler() response:", response.text)
     # print("success:", response.json()["result"]["success"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["success"]
 
 
@@ -127,6 +140,8 @@ def memoryProfile(nodeAddr, fileName):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("memoryProfile() response:", response.text)
     # print("success:", response.json()["result"]["success"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["success"]
 
 
@@ -141,6 +156,8 @@ def lockProfile(nodeAddr, fileName):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("lockProfile() response:", response.text)
     # print("success:", response.json()["result"]["success"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["success"]
 
 

@@ -18,6 +18,8 @@ def createUser(nodeAddr, username, password):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("createUser() response:", response.text)
     # print("success:", response.json()["result"]["success"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["success"]
 
 
@@ -31,6 +33,8 @@ def listUsers(nodeAddr):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("listUsers() response:", response.text)
     # print("users:", response.json()["result"]["users"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["users"]
 
 
@@ -45,6 +49,8 @@ def exportUser(nodeAddr, username, password):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("exportUser() response:", response.text)
     # print("user:", response.json()["result"]["user"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["user"]
 
 
@@ -61,4 +67,6 @@ def importUser(nodeAddr, username, password, user):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("importUser() response:", response.text)
     # print("success:", response.json()["result"]["success"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["success"]

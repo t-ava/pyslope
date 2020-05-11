@@ -17,6 +17,8 @@ def createAddress(nodeAddr, username, password):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("createAddress() response:", response.text)
     # print("address:", response.json()["result"]["address"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["address"]
 
 
@@ -32,6 +34,8 @@ def getBalance(nodeAddr, address, assetID):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("getBalance() response:", response.text)
     # print("balance:", response.json()["result"]["balance"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["balance"]
 
 
@@ -46,6 +50,8 @@ def getAllBalances(nodeAddr, address):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("getAllBalances() response:", response.text)
     # print("balances:", response.json()["result"]["balances"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["balances"]
 
 
@@ -62,6 +68,8 @@ def getUTXOs(nodeAddr, addresses):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("getUTXOs() response:", response.text)
     # print("utxos:", response.json()["result"]["utxos"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["utxos"]
 
 
@@ -77,6 +85,8 @@ def issueTx(nodeAddr, tx):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("issueTx() response:", response.text)
     # print("txID:", response.json()["result"]["txID"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["txID"]
 
 
@@ -94,6 +104,8 @@ def signMintTx(nodeAddr, tx, minter, username, password):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("signMintTx() response:", response.text)
     # print("tx:", response.json()["result"]["tx"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["tx"]
 
 
@@ -113,6 +125,8 @@ def getTxStatus(nodeAddr, txID):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("getTxStatus() response:", response.text)
     # print("status:", response.json()["result"]["status"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["status"]
 
 
@@ -130,6 +144,8 @@ def send(nodeAddr, amount, assetID, to, username, password):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("send() response:", response.text)
     # print("txID:", response.json()["result"]["txID"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["txID"]
 
 
@@ -151,6 +167,8 @@ def createFixedCapAsset(nodeAddr, name, symbol, denomination, initialHolders, us
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("createFixedCapAsset() response:", response.text)
     # print("assetID:", response.json()["result"]["assetID"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["assetID"]
 
 
@@ -172,6 +190,8 @@ def createVariableCapAsset(nodeAddr, name, symbol, denomination, minterSets, use
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("createVariableCapAsset() response:", response.text)
     # print("assetID:", response.json()["result"]["assetID"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["assetID"]
 
 
@@ -189,6 +209,8 @@ def createMintTx(nodeAddr, amount, assetID, to, minters):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("createMintTx() response:", response.text)
     # print("tx:", response.json()["result"]["tx"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["tx"]
 
 
@@ -201,6 +223,8 @@ def getAssetDescription(nodeAddr, assetID):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("getAssetDescription() response:", response.text)
     # print("name:", response.json()["result"]["name"], "symbol:", response.json()["result"]["symbol"], "denomination:int:", response.json()["result"]["denomination:int"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["name"], response.json()["result"]["symbol"], response.json()["result"]["denomination"], 
 
 
@@ -219,6 +243,8 @@ def exportAVA(nodeAddr, to, amount, username, password):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("exportAVA() response:", response.text)
     # print("txID:", response.json()["result"]["txID"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["txID"]
 
 
@@ -239,6 +265,8 @@ def importAVA(nodeAddr, to, username, password):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("importAVA() response:", response.text)
     # print("txID:", response.json()["result"]["txID"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["txID"]
 
 
@@ -253,6 +281,8 @@ def exportKey(nodeAddr, username, password, address):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("exportKey() response:", response.text)
     # print("privateKey:", response.json()["result"]["privateKey"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["privateKey"]
 
 
@@ -266,6 +296,8 @@ def importKey(nodeAddr, username, password, privateKey):
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("importKey() response:", response.text)
     # print("address:", response.json()["result"]["address"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["address"]
 
 
@@ -280,6 +312,8 @@ def buildGenesis(nodeAddr, genesisData):
     response = requests.post(nodeAddr+"/ext/vm/avm", headers=headers, data=json.dumps(data))
     # print("buildGenesis() response:", response.text)
     # print("bytes:", response.json()["result"]["bytes"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
     return response.json()["result"]["bytes"]
 
 
