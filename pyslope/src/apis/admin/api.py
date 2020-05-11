@@ -1,10 +1,19 @@
 import requests, json
 
 ENDPOINT = "/ext/admin"
-ADMIN_API_ERROR = "API failed"
 requestID = 0
 
 # https://docs.ava.network/v1.0/en/api/admin/
+
+
+
+# Example: how to use these APIs -> try & except
+# try:
+#     print(alias('http://127.0.0.1:9650', "bc/x", "myAlias"))
+# except Exception as e:
+#     print("API failed:", e)
+
+
 
 # Get the peers this node is connected to
 # @ nodeAddr: node's ip address (ex. 'http://127.0.0.1:9650')
@@ -12,14 +21,13 @@ def peers(nodeAddr):
     global requestID
     headers = {'content-type': 'application/json;'}
     requestID = requestID+1
-    data = {"jsonrpc":"2.0", "id":requestID, "method" :"admin.peers"}                
+    data = {"jsonrpc":"2.0", "id":requestID, "method" :"admin.peers"}               
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
-    if response.status_code != 200 or "error" in response.json():
-        return ADMIN_API_ERROR
     # print("peers() response:", response.text)
     # print("peers:", response.json()["result"]["peers"])
     return response.json()["result"]["peers"]
 
+print(peers('http://127.0.0.1:9650'))
 
 
 # Get the ID of the network this node is participating in
@@ -29,8 +37,6 @@ def getNetworkID(nodeAddr):
     requestID = requestID+1
     data = {"jsonrpc":"2.0", "id":requestID, "method" :"admin.getNetworkID"}
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
-    if response.status_code != 200 or "error" in response.json():
-            return ADMIN_API_ERROR
     # print("getNetworkID() response:", response.text)
     # print("networkID:", response.json()["result"]["networkID"])
     return response.json()["result"]["networkID"]
@@ -49,8 +55,6 @@ def alias(nodeAddr, endpoint, alias):
     requestID = requestID+1
     data = {"jsonrpc":"2.0", "id":requestID, "method" :"admin.alias", "params": {"alias":alias, "endpoint":endpoint}}
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
-    if response.status_code != 200 or "error" in response.json():
-        return ADMIN_API_ERROR
     # print("alias() response:", response.text)
     # print("success:", response.json()["result"]["success"])
     return response.json()["result"]["success"]
@@ -66,8 +70,6 @@ def aliasChain(nodeAddr, chainID, alias):
     requestID = requestID+1
     data = {"jsonrpc":"2.0", "id":requestID, "method" :"admin.aliasChain", "params": {"chain":chainID, "alias":alias}}
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
-    if response.status_code != 200 or "error" in response.json():
-        return ADMIN_API_ERROR
     # print("aliasChain() response:", response.text)
     # print("success:", response.json()["result"]["success"])
     return response.json()["result"]["success"]
@@ -82,8 +84,6 @@ def getBlockchainID(nodeAddr, chainAlias):
     requestID = requestID+1
     data = {"jsonrpc":"2.0", "id":requestID, "method" :"admin.getBlockchainID", "params": {"alias":chainAlias}}
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
-    if response.status_code != 200 or "error" in response.json():
-        return ADMIN_API_ERROR
     # print("getBlockchainID() response:", response.text)
     # print("blockchainID:", response.json()["result"]["blockchainID"])
     return response.json()["result"]["blockchainID"]
@@ -98,8 +98,6 @@ def startCPUProfiler(nodeAddr, fileName):
     requestID = requestID+1
     data = {"jsonrpc":"2.0", "id":requestID, "method" :"admin.startCPUProfiler", "params": {"fileName":fileName}}
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
-    if response.status_code != 200 or "error" in response.json():
-        return ADMIN_API_ERROR
     # print("startCPUProfiler() response:", response.text)
     # print("success:", response.json()["result"]["success"])
     return response.json()["result"]["success"]
@@ -113,8 +111,6 @@ def stopCPUProfiler(nodeAddr):
     requestID = requestID+1
     data = {"jsonrpc":"2.0", "id":requestID, "method" :"admin.stopCPUProfiler"}
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
-    if response.status_code != 200 or "error" in response.json():
-        return ADMIN_API_ERROR
     # print("stopCPUProfiler() response:", response.text)
     # print("success:", response.json()["result"]["success"])
     return response.json()["result"]["success"]
@@ -129,8 +125,6 @@ def memoryProfile(nodeAddr, fileName):
     requestID = requestID+1
     data = {"jsonrpc":"2.0", "id":requestID, "method" :"admin.memoryProfile", "params": {"fileName":fileName}}
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
-    if response.status_code != 200 or "error" in response.json():
-        return ADMIN_API_ERROR
     # print("memoryProfile() response:", response.text)
     # print("success:", response.json()["result"]["success"])
     return response.json()["result"]["success"]
@@ -145,8 +139,6 @@ def lockProfile(nodeAddr, fileName):
     requestID = requestID+1
     data = {"jsonrpc":"2.0", "id":requestID, "method" :"admin.lockProfile", "params": {"fileName":fileName}}
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
-    if response.status_code != 200 or "error" in response.json():
-        return ADMIN_API_ERROR
     # print("lockProfile() response:", response.text)
     # print("success:", response.json()["result"]["success"])
     return response.json()["result"]["success"]
