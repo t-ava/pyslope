@@ -6,6 +6,7 @@ requestID = 0
 # https://docs.ava.network/v1.0/en/api/platform/
 
 
+
 # Create a new blockchain
 # Currently only supports creation of new instances of the AVM and the Timestamp VM
 # @ subnetID: the ID of the Subnet that validates the new blockchain

@@ -1,11 +1,12 @@
 import requests, json
 
+# ENDPOINT= "/ext/bc/[blockchainID]"  # to interact with other AVM instances, where blockchainID is the ID of a blockchain running the AVM.
 ENDPOINT = "/ext/bc/X"
-# /ext/bc/blockchainID to interact with other AVM instances, where blockchainID is the ID of a blockchain running the AVM.
-
 requestID = 0
 
 # https://docs.ava.network/v1.0/en/api/avm/
+
+
 
 # Create a new address controlled by the given user
 def createAddress(nodeAddr, username, password):
