@@ -250,3 +250,13 @@ except:
     print("api failed")
 print()
 getBalance(defaultGenesisAccount)
+
+
+
+### TODO
+# 1. find genesis account which was FUNDED already -> clear
+# 2. add the node to the default subnet (need AVA)
+# 3. make another subnet
+# 4. add the node to the non-default subnet
+# 5. make new X-blockchain
+
