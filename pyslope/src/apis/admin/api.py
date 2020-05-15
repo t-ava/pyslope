@@ -161,3 +161,18 @@ def lockProfile(nodeAddr, fileName):
     return response.json()["result"]["success"]
 
 
+
+# get the node's ID (not included in the admin API document)
+def getNodeID(nodeAddr):
+    global requestID
+    headers = {'content-type': 'application/json;'}
+    requestID = requestID+1
+    data = {"jsonrpc":"2.0", "id":requestID, "method" :"admin.getNodeID"}
+    response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
+    # print("getNodeID() response:", response.text)
+    # print("nodeID:", response.json()["result"]["nodeID"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
+    return response.json()["result"]["nodeID"]
+
+
