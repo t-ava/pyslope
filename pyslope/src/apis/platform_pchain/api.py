@@ -31,6 +31,7 @@ def createBlockchain(nodeAddr, subnetID, vmID, name, payerNonce, genesisData):
     return response.json()["result"]["unsignedTx"]
 
 
+
 # Get the status of a blockchain
 # @ return type ex. status: Validating / Created / Preferred / Unknown
 #     Validating: The blockchain is being validated by this node
@@ -41,7 +42,7 @@ def getBlockchainStatus(nodeAddr, blockchainID):
     global requestID
     headers = {'content-type': 'application/json;'}
     requestID = requestID+1
-    data = {"jsonrpc":"2.0", "id":requestID, "method" :"platform.getBlockchainStatus", "params": {"subnetID":subnetID, "vmID":vmID, "name":name, "payerNonce":payerNonce, "genesisData":genesisData}}
+    data = {"jsonrpc":"2.0", "id":requestID, "method" :"platform.getBlockchainStatus", "params": {"blockchainID":blockchainID}}
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("getBlockchainStatus() response:", response.text)
     # print("status:", response.json()["result"]["status"])
@@ -114,12 +115,15 @@ def listAccounts(nodeAddr, username, password):
 #   endTime: the Unix time when the validator stops validating the Subnet
 #   weight: the validator’s weight when sampling validators. Omitted if subnetID is the default subnet
 #   stakeAmount: the amount of nAVA this validator staked. Omitted if subnetID is not the default subnet
-#   id: the validator’s ID
+#   id: the validator node's ID
 def getCurrentValidators(nodeAddr, subnetID):
     global requestID
     headers = {'content-type': 'application/json;'}
     requestID = requestID+1
-    data = {"jsonrpc":"2.0", "id":requestID, "method" :"platform.getCurrentValidators", "params": {"subnetID":subnetID}}
+    if subnetID == "":  # default subnet
+        data = {"jsonrpc":"2.0", "id":requestID, "method" :"platform.getCurrentValidators"}
+    else:
+        data = {"jsonrpc":"2.0", "id":requestID, "method" :"platform.getCurrentValidators", "params": {"subnetID":subnetID}}
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("getCurrentValidators() response:", response.text)
     # print("validators:", response.json()["result"]["validators"])
@@ -135,7 +139,10 @@ def getPendingValidators(nodeAddr, subnetID):
     global requestID
     headers = {'content-type': 'application/json;'}
     requestID = requestID+1
-    data = {"jsonrpc":"2.0", "id":requestID, "method" :"platform.getPendingValidators", "params": {"subnetID":subnetID}}
+    if subnetID == "":  # default subnet
+        data = {"jsonrpc":"2.0", "id":requestID, "method" :"platform.getPendingValidators"}
+    else:
+        data = {"jsonrpc":"2.0", "id":requestID, "method" :"platform.getPendingValidators", "params": {"subnetID":subnetID}}
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("getPendingValidators() response:", response.text)
     # print("validators:", response.json()["result"]["validators"])
@@ -162,11 +169,13 @@ def sampleValidators(nodeAddr, size, subnetID):
     return response.json()["result"]["validators"]
 
 
+
 # Add a validator to the Default Subnet
 # @ id: the node ID of the validator
 # @ startTime: the Unix time when the validator starts validating the Default Subnet
 # @ endTime: the Unix time when the validator stops validating the Default Subnet (and staked AVA is returned)
 # @ stakeAmount: the amount of nAVA the validator is staking
+#   CAUTION: must be bigger than 10 microAVA (10000 nanoAVA) (1 AVA = 1000 milliAVA = 1000000 microAVA = 1000000000 nanoAVA)
 # @ payerNonce: the next unused nonce of the account that is providing the staked AVA and paying the transaction fee
 # @ destination: the address of the account that the staked AVA will be returned to, as well as a validation reward if the validator is sufficiently responsive and correct while it validated
 # @ delegationFeeRate: the percent fee this validator charges when others delegate stake to them, multiplied by 10,000
@@ -193,6 +202,8 @@ def addDefaultSubnetValidator(nodeAddr, id, startTime, endTime, stakeAmount, pay
 # @ subnetID: the Subnet they will validate
 # @ startTime: the Unix time when the validator starts validating the Subnet
 # @ endTime: the Unix time when the validator stops validating the Subnet
+#   CAUTION: stakingDuration = endTime - startTime
+#   stakingDuration must be bigger than 24 hours (86400 sec)
 # @ weight: the validator’s weight used for sampling
 # @ payerNonce: the next unused nonce of the account that will pay the transaction fee for this transaction
 # @ return type ex. unsignedTx: the unsigned transaction
@@ -367,3 +378,18 @@ def issueTx(nodeAddr, tx):
     if "error" in response.json():
         print("API error:", response.json()["error"])
     return response.json()["result"]["txID"]
+
+
+
+# get all subnets that exist (not included in the platform API document)
+def getSubnets(nodeAddr):
+    global requestID
+    headers = {'content-type': 'application/json;'}
+    requestID = requestID+1
+    data = {"jsonrpc":"2.0", "id":requestID, "method" :"platform.getSubnets"}
+    response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
+    # print("getSubnets() response:", response.text)
+    # print("subnets:", response.json()["result"]["subnets"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
+    return response.json()["result"]["subnets"]
