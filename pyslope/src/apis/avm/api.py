@@ -39,6 +39,7 @@ def getBalance(nodeAddr, address, assetID):
     return response.json()["result"]["balance"]
 
 
+
 # Get the balances of all assets controlled by a given address
 # @ address: (ex. "X-Go7PyA65ZUVichsQVmAt9d65h2S7Exiw")
 # @ return type ex. balances: [{asset: "AVA", balance: "102"}, {asset: "2sdnziCz37Jov3QSNMXcFRGFJ1tgauaj6L7qfk7yUcRPfQMC79", balance: "1000"}]
@@ -130,6 +131,7 @@ def getTxStatus(nodeAddr, txID):
     return response.json()["result"]["status"]
 
 
+
 # Send a quantity of an asset to an address
 # @ amount: asset amount to send (ex. 10000)
 # @ assetID: ID of asset (ex. "AVA")
@@ -147,6 +149,7 @@ def send(nodeAddr, amount, assetID, to, username, password):
     if "error" in response.json():
         print("API error:", response.json()["error"])
     return response.json()["result"]["txID"]
+
 
 
 # Create a new fixed-cap, fungible asset
@@ -172,6 +175,7 @@ def createFixedCapAsset(nodeAddr, name, symbol, denomination, initialHolders, us
     return response.json()["result"]["assetID"]
 
 
+
 # Create a new variable-cap, fungible asset. No units of the asset exist at initialization
 # Minters can mint units of this asset using createMintTx, signMintTx and issueTx
 # The asset can be sent with avm.send
@@ -195,6 +199,7 @@ def createVariableCapAsset(nodeAddr, name, symbol, denomination, minterSets, use
     return response.json()["result"]["assetID"]
 
 
+
 # Create an unsigned transaction to mint more of a variable-cap asset (created with avm.createVariableCapAsset)
 # @ amount: units of asset to be created
 # @ assetID: ID of asset
@@ -214,6 +219,7 @@ def createMintTx(nodeAddr, amount, assetID, to, minters):
     return response.json()["result"]["tx"]
 
 
+
 # Get information about an asset
 def getAssetDescription(nodeAddr, assetID):
     global requestID
@@ -226,6 +232,7 @@ def getAssetDescription(nodeAddr, assetID):
     if "error" in response.json():
         print("API error:", response.json()["error"])
     return response.json()["result"]["name"], response.json()["result"]["symbol"], response.json()["result"]["denomination"], 
+
 
 
 # ???
@@ -315,5 +322,3 @@ def buildGenesis(nodeAddr, genesisData):
     if "error" in response.json():
         print("API error:", response.json()["error"])
     return response.json()["result"]["bytes"]
-
-
