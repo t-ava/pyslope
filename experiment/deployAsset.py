@@ -339,7 +339,7 @@ assetInfo.append({"stationName": "station2", "stationSymbol": "ST2", "initialMin
 for i in range(len(assetInfo)):
     assetID = createVariableCapAsset(assetInfo[i]["stationName"], assetInfo[i]["stationSymbol"])
     print("wait for asset confirmation")
-    time.sleep(3)
+    time.sleep(7)
     unsignedTX = mintAsset(assetInfo[i]["initialMintAmount"], assetID)
     signedTx = signMintTx(unsignedTX)
     txID = avm.issueTx(API_NODE_IP, signedTx)
@@ -353,3 +353,19 @@ for i in range(len(assetInfo)):
 
 print("\nDone! make & mint all the assets")
 print("current balance at address", xAddresses[0], "\n", avm.getAllBalances(API_NODE_IP, xAddresses[0]))
+
+
+# send some AVA to users (from genesis account)
+try:
+    avm.send(API_NODE_IP, 20000, "AVA", xAddresses[1], usernames[0], passwords[0])
+except:
+    print("api failed")
+time.sleep(5)
+try:
+    avm.send(API_NODE_IP, 44999999999950000, "AVA", "X-"+genesisAddress, usernames[0], passwords[0])
+except:
+    print("api failed")
+time.sleep(5)
+
+print("current balance at address", xAddresses[0], "\n", avm.getAllBalances(API_NODE_IP, xAddresses[0]))
+print("current balance at address", xAddresses[1], "\n", avm.getAllBalances(API_NODE_IP, xAddresses[1]))
