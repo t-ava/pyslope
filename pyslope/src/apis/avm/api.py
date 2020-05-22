@@ -152,6 +152,28 @@ def send(nodeAddr, amount, assetID, to, username, password):
 
 
 
+# NEW API: SendFrom (need fixed version gecko node)
+# send a quantity of an asset to an address
+# @ amount: asset amount to send (ex. 10000)
+# @ assetID: ID of asset (ex. "AVA")
+# @ to: address to receive asset (ex. "X-xMrKg8uUECt5CS9RE9j5hizv2t2SWTbk")
+# @ username: asset is sent from addresses controlled by this user (ex. "userThatControlsAtLeast10000OfThisAsset")
+# @ password: password of the user username (ex. "myPassword")
+# @ fromAddr: get asset from this account
+def sendFrom(nodeAddr, amount, assetID, to, username, password, fromAddr):
+    global requestID
+    headers = {'content-type': 'application/json;'}
+    requestID = requestID+1
+    data = {"jsonrpc":"2.0", "id":requestID, "method" :"avm.sendFrom", "params": {"amount":amount, "assetID":assetID, "to":to, "username":username, "password":password, "from":fromAddr}}
+    response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
+    # print("send() response:", response.text)
+    # print("txID:", response.json()["result"]["txID"])
+    if "error" in response.json():
+        print("API error:", response.json()["error"])
+    return response.json()["result"]["txID"]
+
+
+
 # Create a new fixed-cap, fungible asset
 # A quantity of it is created at initialization and then no more is ever created
 # The asset can be sent with avm.sendFungibleAsset
