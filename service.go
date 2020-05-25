@@ -671,187 +671,23 @@ func (service *Service) Send(r *http.Request, args *SendArgs, reply *SendReply) 
 		kc.Add(sk)
 	}
 
-	amountSpent := uint64(0)
-	time := service.vm.clock.Unix()
-
-	ins := []*ava.TransferableInput{}
-	keys := [][]*crypto.PrivateKeySECP256K1R{}
-	for _, utxo := range utxos {
-		if !utxo.AssetID().Equals(assetID) {
-			continue
-		}
-		inputIntf, signers, err := kc.Spend(utxo.Out, time)
+	if args.From != "" {
+		fromBytes, err := service.vm.Parse(args.From)
 		if err != nil {
-			continue
+			return fmt.Errorf("problem parsing to address: %w", err)
 		}
-		input, ok := inputIntf.(ava.Transferable)
-		if !ok {
-			continue
-		}
-		spent, err := safemath.Add64(amountSpent, input.Amount())
+		from, err := ids.ToShortID(fromBytes)
 		if err != nil {
-			return errSpendOverflow
-		}
-		amountSpent = spent
-
-		in := &ava.TransferableInput{
-			UTXOID: utxo.UTXOID,
-			Asset:  ava.Asset{ID: assetID},
-			In:     input,
+			return fmt.Errorf("problem parsing to address: %w", err)
 		}
 
-		ins = append(ins, in)
-		keys = append(keys, signers)
-
-		if amountSpent >= uint64(args.Amount) {
-			break
-		}
-	}
-
-	if amountSpent < uint64(args.Amount) {
-		return errInsufficientFunds
-	}
-
-	ava.SortTransferableInputsWithSigners(ins, keys)
-
-	outs := []*ava.TransferableOutput{&ava.TransferableOutput{
-		Asset: ava.Asset{ID: assetID},
-		Out: &secp256k1fx.TransferOutput{
-			Amt:      uint64(args.Amount),
-			Locktime: 0,
-			OutputOwners: secp256k1fx.OutputOwners{
-				Threshold: 1,
-				Addrs:     []ids.ShortID{to},
-			},
-		},
-	}}
-
-	if amountSpent > uint64(args.Amount) {
-		changeAddr := kc.Keys[0].PublicKey().Address()
-		outs = append(outs, &ava.TransferableOutput{
-			Asset: ava.Asset{ID: assetID},
-			Out: &secp256k1fx.TransferOutput{
-				Amt:      amountSpent - uint64(args.Amount),
-				Locktime: 0,
-				OutputOwners: secp256k1fx.OutputOwners{
-					Threshold: 1,
-					Addrs:     []ids.ShortID{changeAddr},
-				},
-			},
-		})
-	}
-
-	ava.SortTransferableOutputs(outs, service.vm.codec)
-
-	tx := Tx{
-		UnsignedTx: &BaseTx{
-			NetID: service.vm.ctx.NetworkID,
-			BCID:  service.vm.ctx.ChainID,
-			Outs:  outs,
-			Ins:   ins,
-		},
-	}
-
-	unsignedBytes, err := service.vm.codec.Marshal(&tx.UnsignedTx)
-	if err != nil {
-		return fmt.Errorf("problem creating transaction: %w", err)
-	}
-	hash := hashing.ComputeHash256(unsignedBytes)
-
-	for _, credKeys := range keys {
-		cred := &secp256k1fx.Credential{}
-		for _, key := range credKeys {
-			sig, err := key.SignHash(hash)
-			if err != nil {
-				return fmt.Errorf("problem creating transaction: %w", err)
+		for _, sk := range kc.Keys {
+			if sk.PublicKey().Address().String() == from.String() {
+				kc = secp256k1fx.NewKeychain()
+				kc.Add(sk)
+				break
 			}
-			fixedSig := [crypto.SECP256K1RSigLen]byte{}
-			copy(fixedSig[:], sig)
-
-			cred.Sigs = append(cred.Sigs, fixedSig)
 		}
-		tx.Creds = append(tx.Creds, cred)
-	}
-
-	b, err := service.vm.codec.Marshal(tx)
-	if err != nil {
-		return fmt.Errorf("problem creating transaction: %w", err)
-	}
-
-	txID, err := service.vm.IssueTx(b, nil)
-	if err != nil {
-		return fmt.Errorf("problem issuing transaction: %w", err)
-	}
-
-	reply.TxID = txID
-	return nil
-}
-
-// SendFrom returns the ID of the newly created transaction
-// send asset from the From address
-func (service *Service) SendFrom(r *http.Request, args *SendArgs, reply *SendReply) error {
-	service.vm.ctx.Log.Verbo("Send called with username: %s", args.Username)
-
-	if args.Amount == 0 {
-		return errInvalidAmount
-	}
-
-	assetID, err := service.vm.Lookup(args.AssetID)
-	if err != nil {
-		assetID, err = ids.FromString(args.AssetID)
-		if err != nil {
-			return fmt.Errorf("asset '%s' not found", args.AssetID)
-		}
-	}
-
-	toBytes, err := service.vm.Parse(args.To)
-	if err != nil {
-		return fmt.Errorf("problem parsing to address: %w", err)
-	}
-	to, err := ids.ToShortID(toBytes)
-	if err != nil {
-		return fmt.Errorf("problem parsing to address: %w", err)
-	}
-
-	fromBytes, err := service.vm.Parse(args.From)
-	if err != nil {
-		return fmt.Errorf("problem parsing to address: %w", err)
-	}
-	from, err := ids.ToShortID(fromBytes)
-	if err != nil {
-		return fmt.Errorf("problem parsing to address: %w", err)
-	}
-
-	db, err := service.vm.ctx.Keystore.GetDatabase(args.Username, args.Password)
-	if err != nil {
-		return fmt.Errorf("problem retrieving user: %w", err)
-	}
-
-	user := userState{vm: service.vm}
-
-	addresses, _ := user.Addresses(db)
-
-	addrs := ids.Set{}
-	addrs.Add(addresses...)
-
-	utxos, err := service.vm.GetUTXOs(addrs)
-	if err != nil {
-		return fmt.Errorf("problem retrieving user's UTXOs: %w", err)
-	}
-
-	kc := secp256k1fx.NewKeychain()
-	for _, addr := range addresses {
-		sk, err := user.Key(db, addr)
-		if err != nil {
-			return fmt.Errorf("problem retrieving private key: %w", err)
-		}
-		if sk.PublicKey().Address().String() == from.String() {
-			kc.Add(sk)
-			break
-		}
-	}
-	if len(kc.Keys) == 0 {
-		return fmt.Errorf("the user has no matching address with args.From", errNoMatchingAddress)
 	}
 
 	amountSpent := uint64(0)
