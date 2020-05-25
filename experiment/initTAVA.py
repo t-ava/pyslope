@@ -180,15 +180,15 @@ print("asset description:", avm.getAssetDescription(API_NODE_IP, assetID))
 # send ride asset to stations
 for i in range(len(initialRideNumber)):
     try:
-        avm.sendFrom(API_NODE_IP, initialRideNumber[i], assetID, stationAddresses[i], usernames[1], passwords[1], xAddresses[1])
+        avm.send(API_NODE_IP, initialRideNumber[i], assetID, stationAddresses[i], usernames[1], passwords[1], xAddresses[1])
         time.sleep(1)
     except:
         print("api failed")
 
 # send AVA to host & user1 from genesis
-avm.sendFrom(API_NODE_IP, 30000, "AVA", xAddresses[1], usernames[0], passwords[0], xAddresses[0])
+avm.send(API_NODE_IP, 30000, "AVA", xAddresses[1], usernames[0], passwords[0], xAddresses[0])
 time.sleep(1)
-avm.sendFrom(API_NODE_IP, 20000, "AVA", xAddresses[2], usernames[0], passwords[0], xAddresses[0])
+avm.send(API_NODE_IP, 20000, "AVA", xAddresses[2], usernames[0], passwords[0], xAddresses[0])
 time.sleep(1)
 
 # check balances
