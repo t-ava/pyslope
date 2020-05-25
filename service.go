@@ -37,7 +37,7 @@ var (
 	errUnknownOutputType         = errors.New("unknown output type")
 	errUnneededAddress           = errors.New("address not required to sign")
 	errUnknownCredentialType     = errors.New("unknown credential type")
-	errNoMatchingAddress         = errors.New("the user has no args.From address")
+	errNoMatchingAddress         = errors.New("the user has no from address")
 )
 
 // Service defines the base service for the asset vm
@@ -613,7 +613,7 @@ type SendArgs struct {
 	Amount   json.Uint64 `json:"amount"`
 	AssetID  string      `json:"assetID"`
 	To       string      `json:"to"`
-	From     string      `json:"from"` // (jmlee)
+	From     string      `json:"from"`
 }
 
 // SendReply defines the Send replies returned from the API
@@ -788,7 +788,7 @@ func (service *Service) Send(r *http.Request, args *SendArgs, reply *SendReply) 
 }
 
 // SendFrom returns the ID of the newly created transaction
-// get asset from the certain From address
+// send asset from the From address
 func (service *Service) SendFrom(r *http.Request, args *SendArgs, reply *SendReply) error {
 	service.vm.ctx.Log.Verbo("Send called with username: %s", args.Username)
 
@@ -813,7 +813,6 @@ func (service *Service) SendFrom(r *http.Request, args *SendArgs, reply *SendRep
 		return fmt.Errorf("problem parsing to address: %w", err)
 	}
 
-	// cast args.From to address (jmlee)
 	fromBytes, err := service.vm.Parse(args.From)
 	if err != nil {
 		return fmt.Errorf("problem parsing to address: %w", err)
@@ -830,34 +829,11 @@ func (service *Service) SendFrom(r *http.Request, args *SendArgs, reply *SendRep
 
 	user := userState{vm: service.vm}
 
-	// (jmlee)
 	addresses, _ := user.Addresses(db)
-	fmt.Println("original addresses:", addresses)
-	fmt.Println("original addresses len:", len(addresses))
-	fmt.Println("args.From:", args.From)
-	fmt.Println("fromBytes:", fromBytes)
-	fmt.Println("from (short ID):", from)
-	fromID, err := ids.ToID(fromBytes)
-	fmt.Println("from (ID):", fromID)
-	//fmt.Println("fromBytes:", fromBytes)
-	//fmt.Println("fromID:", fromID)
-	//addresses = addresses[:1]
-	//addresses[0] = fromID
-	//fmt.Println("changed addresses:", addresses)
-	//fmt.Println("changed addresses len:", len(addresses))
-	_ = fromBytes
 
 	addrs := ids.Set{}
 	addrs.Add(addresses...)
-	fmt.Println("addrs:", addrs)
-	//fmt.Println("addresses[0]:", addresses[0].String())
-	//fmt.Println("addresses[1]:", addresses[1].String())
-	//fmt.Println("addresses[0]:", addresses[0].Key())
-	//fmt.Println("addresses[1]:", addresses[1].Key())
 
-	toIDFromString, err := ids.FromString(args.From)
-	fmt.Println("ID of args.From:", toIDFromString)
-	//addrs.Add(ids.NewID(hashing.ComputeHash256Array(fromBytes))) // (jmlee)
 	utxos, err := service.vm.GetUTXOs(addrs)
 	if err != nil {
 		return fmt.Errorf("problem retrieving user's UTXOs: %w", err)
@@ -869,17 +845,13 @@ func (service *Service) SendFrom(r *http.Request, args *SendArgs, reply *SendRep
 		if err != nil {
 			return fmt.Errorf("problem retrieving private key: %w", err)
 		}
-		fmt.Println("sk address:", sk.PublicKey().Address().String())
-		//kc.Add(sk)
-		if sk.PublicKey().Address().String() == from.String() { // (jmlee)
-			fmt.Println("Same!!!")
+		if sk.PublicKey().Address().String() == from.String() {
 			kc.Add(sk)
 			break
 		}
 	}
-	//fmt.Println("kc len:", len(kc.Keys))
 	if len(kc.Keys) == 0 {
-		return fmt.Errorf("has no matching address with args.From", errNoMatchingAddress)
+		return fmt.Errorf("the user has no matching address with args.From", errNoMatchingAddress)
 	}
 
 	amountSpent := uint64(0)
@@ -939,7 +911,6 @@ func (service *Service) SendFrom(r *http.Request, args *SendArgs, reply *SendRep
 
 	if amountSpent > uint64(args.Amount) {
 		changeAddr := kc.Keys[0].PublicKey().Address()
-		fmt.Println("changeAddr:", changeAddr)
 		outs = append(outs, &ava.TransferableOutput{
 			Asset: ava.Asset{ID: assetID},
 			Out: &secp256k1fx.TransferOutput{
