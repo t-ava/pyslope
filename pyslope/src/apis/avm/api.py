@@ -138,33 +138,34 @@ def getTxStatus(nodeAddr, txID):
 # @ to: address to receive asset (ex. "X-xMrKg8uUECt5CS9RE9j5hizv2t2SWTbk")
 # @ username: asset is sent from addresses controlled by this user (ex. "userThatControlsAtLeast10000OfThisAsset")
 # @ password: password of the user username (ex. "myPassword")
-def send(nodeAddr, amount, assetID, to, username, password):
-    global requestID
-    headers = {'content-type': 'application/json;'}
-    requestID = requestID+1
-    data = {"jsonrpc":"2.0", "id":requestID, "method" :"avm.send", "params": {"amount":amount, "assetID":assetID, "to":to, "username":username, "password":password}}
-    response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
-    # print("send() response:", response.text)
-    # print("txID:", response.json()["result"]["txID"])
-    if "error" in response.json():
-        print("API error:", response.json()["error"])
-    return response.json()["result"]["txID"]
+# def send(nodeAddr, amount, assetID, to, username, password):
+#     global requestID
+#     headers = {'content-type': 'application/json;'}
+#     requestID = requestID+1
+#     data = {"jsonrpc":"2.0", "id":requestID, "method" :"avm.send", "params": {"amount":amount, "assetID":assetID, "to":to, "username":username, "password":password}}
+#     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
+#     # print("send() response:", response.text)
+#     # print("txID:", response.json()["result"]["txID"])
+#     if "error" in response.json():
+#         print("API error:", response.json()["error"])
+#     return response.json()["result"]["txID"]
 
 
 
-# NEW API: SendFrom (need fixed version gecko node)
+# NEW API: (extended)Send (need fixed version gecko node)
 # send a quantity of an asset to an address
+# if fromAddr = "" -> just same as send()
 # @ amount: asset amount to send (ex. 10000)
 # @ assetID: ID of asset (ex. "AVA")
 # @ to: address to receive asset (ex. "X-xMrKg8uUECt5CS9RE9j5hizv2t2SWTbk")
 # @ username: asset is sent from addresses controlled by this user (ex. "userThatControlsAtLeast10000OfThisAsset")
 # @ password: password of the user username (ex. "myPassword")
 # @ fromAddr: get asset from this account
-def sendFrom(nodeAddr, amount, assetID, to, username, password, fromAddr):
+def send(nodeAddr, amount, assetID, to, username, password, fromAddr):
     global requestID
     headers = {'content-type': 'application/json;'}
     requestID = requestID+1
-    data = {"jsonrpc":"2.0", "id":requestID, "method" :"avm.sendFrom", "params": {"amount":amount, "assetID":assetID, "to":to, "username":username, "password":password, "from":fromAddr}}
+    data = {"jsonrpc":"2.0", "id":requestID, "method" :"avm.send", "params": {"amount":amount, "assetID":assetID, "to":to, "username":username, "password":password, "from":fromAddr}}
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("send() response:", response.text)
     # print("txID:", response.json()["result"]["txID"])
