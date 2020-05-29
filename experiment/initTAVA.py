@@ -181,7 +181,7 @@ print("asset description:", avm.getAssetDescription(API_NODE_IP, assetID))
 for i in range(len(initialRideNumber)):
     try:
         avm.send(API_NODE_IP, initialRideNumber[i], assetID, stationAddresses[i], usernames[1], passwords[1], xAddresses[1])
-        time.sleep(1)
+        time.sleep(3)
     except:
         print("api failed")
 
