@@ -1,2 +1,2 @@
-# Ava-RL-anche
-Avalanche based blockchain simulator using Reinforcement Learning
+# pyslope
+python based ava API library
