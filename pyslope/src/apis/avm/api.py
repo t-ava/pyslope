@@ -161,11 +161,11 @@ def getTxStatus(nodeAddr, txID):
 # @ username: asset is sent from addresses controlled by this user (ex. "userThatControlsAtLeast10000OfThisAsset")
 # @ password: password of the user username (ex. "myPassword")
 # @ fromAddr: get asset from this account
-def send(nodeAddr, amount, assetID, to, username, password, fromAddr):
+def send(nodeAddr, amount, assetID, to, username, password, froms):
     global requestID
     headers = {'content-type': 'application/json;'}
     requestID = requestID+1
-    data = {"jsonrpc":"2.0", "id":requestID, "method" :"avm.send", "params": {"amount":amount, "assetID":assetID, "to":to, "username":username, "password":password, "from":fromAddr}}
+    data = {"jsonrpc":"2.0", "id":requestID, "method" :"avm.send", "params": {"amount":amount, "assetID":assetID, "to":to, "username":username, "password":password, "froms":froms}}
     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
     # print("send() response:", response.text)
     # print("txID:", response.json()["result"]["txID"])
