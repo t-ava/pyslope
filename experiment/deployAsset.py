@@ -320,16 +320,28 @@ except:
     sys.exit()
 
 print("wait for connection")
-while len(admin.peers(API_NODE_IP)) < 4:
-    pass
+# while len(admin.peers(API_NODE_IP)) < 4:
+#     pass
 print("peers:", admin.peers(API_NODE_IP))
 
 createUsers(usernames, passwords)
+# address = avm.importKey(API_NODE_IP, usernames[0], passwords[0], genesisPrivateKey)
+# print("imported address:", address , "(genesis account imported)")
 for i in range(3):
     address = avm.importKey(API_NODE_IP, usernames[i], passwords[i], privateKeys[i])
     print("imported address:", address)
 address = avm.importKey(API_NODE_IP, usernames[0], passwords[0], genesisPrivateKey)
 print("imported address:", address , "(genesis account imported)")
+
+### attack code ###
+# cnt = 0
+# while True:
+#     print(cnt)
+#     cnt = cnt + 1
+#     address = avm.importKey(API_NODE_IP, usernames[0], passwords[0], privateKeys[0])
+#     print("imported address:", address)
+
+
 
 assetInfo = list()
 assetInfo.append({"stationName": "station0", "stationSymbol": "ST0", "initialMintAmount": 100})
@@ -353,19 +365,23 @@ for i in range(len(assetInfo)):
 
 print("\nDone! make & mint all the assets")
 print("current balance at address", xAddresses[0], "\n", avm.getAllBalances(API_NODE_IP, xAddresses[0]))
-
+print("current balance at address", "X-"+genesisAddress, "\n", avm.getAllBalances(API_NODE_IP, "X-"+genesisAddress))
+print()
 
 # send some AVA to users (from genesis account)
 try:
     avm.send(API_NODE_IP, 20000, "AVA", xAddresses[1], usernames[0], passwords[0])
+    avm.sendFrom(API_NODE_IP, 20000, "AVA", xAddresses[1], usernames[0], passwords[0], "X-"+genesisAddress)
 except:
     print("api failed")
 time.sleep(5)
 try:
     avm.send(API_NODE_IP, 44999999999950000, "AVA", "X-"+genesisAddress, usernames[0], passwords[0])
+    avm.sendFrom(API_NODE_IP, 10000, "AVA", xAddresses[0], usernames[1], passwords[1], xAddresses[1])
 except:
     print("api failed")
 time.sleep(5)
 
 print("current balance at address", xAddresses[0], "\n", avm.getAllBalances(API_NODE_IP, xAddresses[0]))
+print("current balance at address", "X-"+genesisAddress, "\n", avm.getAllBalances(API_NODE_IP, "X-"+genesisAddress))
 print("current balance at address", xAddresses[1], "\n", avm.getAllBalances(API_NODE_IP, xAddresses[1]))
