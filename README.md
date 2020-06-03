@@ -79,3 +79,4 @@ send AVA asset from user1 to user2
 ```python
 avm.send(API_NODE_IP, 50000, "AVA", addresses[1], usernames[0], passwords[0], [addresses[0]])
 ```
+
