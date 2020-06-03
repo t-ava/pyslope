@@ -1,5 +1,5 @@
 import os, sys
-LIB_PATH = "/home/jmlee/ava/Ava-RL-anche/pyslope/src/apis"
+LIB_PATH = "/home/jmlee/ava/pyslope/src/apis"
 sys.path.insert(1, LIB_PATH)
 import admin, avm, keystore, platform_pchain
 from admin import api as admin
@@ -12,33 +12,6 @@ usernames = list()
 passwords = list()
 usernames.append("myUser")
 passwords.append("fj!dbCJDSCB@A482v2b&e02")
-
-# print("peers:", admin.peers(API_NODE_IP))
-# print("network id:", admin.getNetworkID(API_NODE_IP))
-blockchains = platform.getBlockchains(API_NODE_IP)
-print("blockchains:", blockchains)
-
-
-
-# try:
-#     print("create User:", keystore.createUser(API_NODE_IP, usernames[0], passwords[0]))
-# except:
-#     print("api failed")
-
-# try:
-#     print("create Address:", avm.createAddress(API_NODE_IP, usernames[0], passwords[0]))
-# except:
-#     print("api failed")
-
-# users = keystore.listUsers(API_NODE_IP)
-# print(keystore.listUsers(API_NODE_IP))
-
-
-
-try:
-    print(":", )
-except:
-    print("api failed")
 
 
 
@@ -135,7 +108,6 @@ except:
     print("api failed")
 print()
 
-# ????? WHY DONT WORK?
 # 5. createFixedCapAsset(nodeAddr, name, symbol, denomination, initialHolders, username, password):
 # make fixed-cap asset (= token which cannot be minted anymore)
 try:
@@ -164,7 +136,6 @@ except:
     print("api failed")
 print()
 
-# ????? WHY DONT WORK?
 # 7. createVariableCapAsset(nodeAddr, name, symbol, denomination, minterSets, username, password):
 # make variable-cap asset (= token which can be minted anytime)
 try:
@@ -185,48 +156,6 @@ try:
     minters.append(newAddress)
     mintTx = avm.createMintTx(API_NODE_IP, 10000, varAssetID, newAddress, minters)
     print("mint tx:", mintTx)
-except:
-    print("api failed")
-print()
-
-# 
-try:
-    print(":", )
-except:
-    print("api failed")
-print()
-
-# 
-try:
-    print(":", )
-except:
-    print("api failed")
-print()
-
-# 
-try:
-    print(":", )
-except:
-    print("api failed")
-print()
-
-# 
-try:
-    print(":", )
-except:
-    print("api failed")
-print()
-
-# 
-try:
-    print(":", )
-except:
-    print("api failed")
-print()
-
-# 
-try:
-    print(":", )
 except:
     print("api failed")
 print()
@@ -258,8 +187,7 @@ except:
     print("api failed")
 print()
 
-# ?????
-# 4. def validates(nodeAddr, subnetID): get blockchain IDs which the subnet validates
+# 4. def validates(nodeAddr, subnetID): get the IDs of the blockchains a Subnet validates
 try:
     print("bockchain IDs:", platform.validates(API_NODE_IP, subnetID))
 except:
@@ -288,3 +216,4 @@ try:
 except:
     print("api failed")
 print()
+
