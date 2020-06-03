@@ -1,5 +1,5 @@
 import os, sys, random
-LIB_PATH = "/home/jmlee/ava/Ava-RL-anche/pyslope/src/apis"
+LIB_PATH = "/home/jmlee/ava/pyslope/src/apis"
 sys.path.insert(1, LIB_PATH)
 import admin, avm, keystore, platform_pchain
 from admin import api as admin
@@ -180,15 +180,15 @@ print("asset description:", avm.getAssetDescription(API_NODE_IP, assetID))
 # send ride asset to stations
 for i in range(len(initialRideNumber)):
     try:
-        avm.send(API_NODE_IP, initialRideNumber[i], assetID, stationAddresses[i], usernames[1], passwords[1], xAddresses[1])
+        avm.send(API_NODE_IP, initialRideNumber[i], assetID, stationAddresses[i], usernames[1], passwords[1], [xAddresses[1]])
         time.sleep(3)
     except:
         print("api failed")
 
 # send AVA to host & user1 from genesis
-avm.send(API_NODE_IP, 30000, "AVA", xAddresses[1], usernames[0], passwords[0], xAddresses[0])
+avm.send(API_NODE_IP, 30000, "AVA", xAddresses[1], usernames[0], passwords[0], [xAddresses[0]])
 time.sleep(1)
-avm.send(API_NODE_IP, 20000, "AVA", xAddresses[2], usernames[0], passwords[0], xAddresses[0])
+avm.send(API_NODE_IP, 20000, "AVA", xAddresses[2], usernames[0], passwords[0], [xAddresses[0]])
 time.sleep(1)
 
 # check balances
