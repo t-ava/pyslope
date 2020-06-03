@@ -132,26 +132,6 @@ def getTxStatus(nodeAddr, txID):
 
 
 
-# Send a quantity of an asset to an address
-# @ amount: asset amount to send (ex. 10000)
-# @ assetID: ID of asset (ex. "AVA")
-# @ to: address to receive asset (ex. "X-xMrKg8uUECt5CS9RE9j5hizv2t2SWTbk")
-# @ username: asset is sent from addresses controlled by this user (ex. "userThatControlsAtLeast10000OfThisAsset")
-# @ password: password of the user username (ex. "myPassword")
-# def send(nodeAddr, amount, assetID, to, username, password):
-#     global requestID
-#     headers = {'content-type': 'application/json;'}
-#     requestID = requestID+1
-#     data = {"jsonrpc":"2.0", "id":requestID, "method" :"avm.send", "params": {"amount":amount, "assetID":assetID, "to":to, "username":username, "password":password}}
-#     response = requests.post(nodeAddr+ENDPOINT, headers=headers, data=json.dumps(data))
-#     # print("send() response:", response.text)
-#     # print("txID:", response.json()["result"]["txID"])
-#     if "error" in response.json():
-#         print("API error:", response.json()["error"])
-#     return response.json()["result"]["txID"]
-
-
-
 # NEW API: (extended)Send (need fixed version gecko node)
 # send a quantity of an asset to an address
 # if fromAddr = "" -> just same as send()
@@ -258,7 +238,6 @@ def getAssetDescription(nodeAddr, assetID):
 
 
 
-# ???
 # Send AVA from the X-Chain to an account on the P-Chain
 # After calling this method, you must call the P-Chain’s importAVA method to complete the transfer
 # @ to: the ID of the P-Chain account the AVA is sent to
@@ -279,7 +258,6 @@ def exportAVA(nodeAddr, to, amount, username, password):
 
 
 
-# ???
 # Finalize a transfer of AVA from the P-Chain to the X-Chain
 # Before this method is called, you must call the P-Chain’s exportAVA method to initiate the transfer
 # @ to: the address the AVA is sent to
