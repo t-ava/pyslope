@@ -48,9 +48,10 @@ from platform_pchain import api as platform
 ## Example &mdash; Sending An Asset
 
 This example sends an asset in the AVM to a single recipient.
-We're also assuming that the keystore contains a list of addresses used in this transaction.
 
 ### Create users & keys
+
+make users and keys to send & receive asset
 
 ```python
 API_NODE_IP = "http://127.0.0.1:9650"
@@ -64,12 +65,16 @@ for i in range(len(usernames)):
 
 ### Get balances
 
+check the balance of addresses
+
 ```python
 for i in range(len(usernames)):
   print(usernames[i], addresses[i], "balance:", avm.getAllBalances(API_NODE_IP, addresses[i]))
 ```
 
 ### Send AVA
+
+send AVA asset from user1 to user2
 
 ```python
 avm.send(API_NODE_IP, 50000, "AVA", addresses[1], usernames[0], passwords[0], [addresses[0]])
