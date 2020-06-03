@@ -66,7 +66,7 @@ for i in range(len(usernames)):
 
 ```python
 for i in range(len(usernames)):
-  print(usernames[0], addresses[0], "balance:", avm.getAllBalances(API_NODE_IP, addresses[0]))
+  print(usernames[i], addresses[i], "balance:", avm.getAllBalances(API_NODE_IP, addresses[i]))
 ```
 
 ### Send AVA
