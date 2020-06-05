@@ -152,7 +152,7 @@ for i in range(len(usernames)):
 
 # get station addresses
 # createAndSaveKeys(usernames[1], passwords[1], 969, "stations.txt") # if you dont have "stations.txt", then call this function
-importAddressesFromFile(usernames[1], passwords[1], "stations_5.txt")
+importAddressesFromFile(usernames[1], passwords[1], "stations_20.txt")
 
 # make ride asset (asset ID: pePewnxEaP82Yd7cgnWbGUYgoBjvUwurvhzCLJpqusievGsUN)
 assetID = createVariableCapAsset("ride", "RIDE")
