@@ -1,5 +1,5 @@
 import os, sys
-LIB_PATH = "/home/jmlee/ava/pyslope/src/apis"
+LIB_PATH = "/home/jmlee/ava/pyslopes/src/apis"
 sys.path.insert(1, LIB_PATH)
 import admin, avm, keystore, platform_pchain
 from admin import api as admin
